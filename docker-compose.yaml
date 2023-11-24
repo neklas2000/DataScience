@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  anaconda:
+    container_name: data_science_anaconda
+    build: .
+    ports:
+      - 80:8888
+    volumes:
+      - ./notebooks:/opt/notebooks/
+      - ./data:/opt/data/
+      - ./scaled_data:/opt/scaled_data/
