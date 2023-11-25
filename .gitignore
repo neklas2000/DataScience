@@ -1,5 +1,6 @@
-data/*
-!data/.gitkeep
+original_data/*
+!original_data/.gitkeep
+!original_data/README.md
 
 notebooks/*
 !notebooks/*.ipynb

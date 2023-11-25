@@ -8,8 +8,17 @@ wind_farms = {
   'e': [str(i + 1).zfill(2) for i in range(2, 38)],
 }
 
-class FacilityDataFrame:
-  def __init__(self, facility: int, wind_farm: str, data_frame: pd.DataFrame):
-    self.facility = f'Anlage {facility}'
-    self.wind_farm = f'Windpark {wind_farm.capitalize()}'
-    self.df = data_frame
+month_mapping = {
+  1: 'Januar',
+  2: 'Februar',
+  3: 'März',
+  4: 'April',
+  5: 'Mai',
+  6: 'Juni',
+  7: 'Juli',
+  8: 'August',
+  9: 'September',
+  10: 'Oktober',
+  11: 'November',
+  12: 'Dezember',
+}
