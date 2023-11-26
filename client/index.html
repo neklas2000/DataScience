@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Science</title>
+    <script src="./src/http-client.js"></script>
+    <script src="./src/image.js"></script>
+    <script src="./src/loader.js"></script>
+    <script src="./src/filter.js"></script>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="toolbar">
+      <span>Data Science Praktikum WiSe 2023/24</span>
+    </div>
+    <main class="content">
+      <div class="tabs">
+        <div class="tab">
+          <button class="tablink" onclick="toggleTab(event, 'tab-1')" id="default-open">
+            Fehlernummern
+          </button>
+          <div class="active-bar"></div>
+        </div>
+        <div class="tab">
+          <button class="tablink" onclick="toggleTab(event, 'tab-2')">
+            Korrelation: Windgeschwindigkeit zu Leistung
+          </button>
+          <div class="active-bar"></div>
+        </div>
+      </div>
+      <div id="tab-1" class="tab-content">
+        <div id="filter-container-1"></div>
+        <button class="load-diagram" onclick="loadErrorFrequencyDiagram()">Lade Diagramm</button>
+        <div id="image-container-1"></div>
+      </div>
+      <div id="tab-2" class="tab-content">
+        <div id="filter-container-2"></div>
+        <button class="load-diagram" onclick="loadCorrelationDiagram()">Lade Diagramm</button>
+        <div id="image-container-2"></div>
+      </div>
+    </main>
+
+    <div id="loader-overlay" class="overlay">
+      <div id="loader-container" style="height: 100%;"></div>
+    </div>
+    <script src="./index.js"></script>
+  </body>
+</html>
