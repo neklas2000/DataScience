@@ -8,6 +8,9 @@
     <script src="./src/image.js"></script>
     <script src="./src/loader.js"></script>
     <script src="./src/filter.js"></script>
+    <script src="./src/mat-tabs.js"></script>
+    <script src="./src/mat-tab.js"></script>
+    <script src="./src/mat-tab-content.js"></script>
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
@@ -15,30 +18,26 @@
       <span>Data Science Praktikum WiSe 2023/24</span>
     </div>
     <main class="content">
-      <div class="tabs">
-        <div class="tab">
-          <button class="tablink" onclick="toggleTab(event, 'tab-1')" id="default-open">
-            Fehlernummern
-          </button>
-          <div class="active-bar"></div>
-        </div>
-        <div class="tab">
-          <button class="tablink" onclick="toggleTab(event, 'tab-2')">
-            Korrelation: Windgeschwindigkeit zu Leistung
-          </button>
-          <div class="active-bar"></div>
-        </div>
-      </div>
-      <div id="tab-1" class="tab-content">
-        <div id="filter-container-1"></div>
-        <button class="load-diagram" onclick="loadErrorFrequencyDiagram()">Lade Diagramm</button>
-        <div id="image-container-1"></div>
-      </div>
-      <div id="tab-2" class="tab-content">
-        <div id="filter-container-2"></div>
-        <button class="load-diagram" onclick="loadCorrelationDiagram()">Lade Diagramm</button>
-        <div id="image-container-2"></div>
-      </div>
+      <mat-tabs>
+        <mat-tab label="Fehlernummern (jährlich)" opened="true"></mat-tab>
+        <mat-tab label="Fehlernummern (monatlich)"></mat-tab>
+        <mat-tab label="Korrelation: Windgeschwindigkeit zu Leistung"></mat-tab>
+        <mat-tab-content>
+          <div id="filter-container-1"></div>
+          <button class="load-diagram" onclick="loadErrorFrequencyDiagram(false)">Lade Diagramm</button>
+          <div id="image-container-1"></div>
+        </mat-tab-content>
+        <mat-tab-content>
+          <div id="filter-container-2"></div>
+          <button class="load-diagram" onclick="loadErrorFrequencyDiagram(true)">Lade Diagramm</button>
+          <div id="image-container-2"></div>
+        </mat-tab-content>
+        <mat-tab-content>
+          <div id="filter-container-3"></div>
+          <button class="load-diagram" onclick="loadCorrelationDiagram()">Lade Diagramm</button>
+          <div id="image-container-3"></div>
+        </mat-tab-content>
+      </mat-tabs>
     </main>
 
     <div id="loader-overlay" class="overlay">

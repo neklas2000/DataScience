@@ -37,46 +37,6 @@ html, body {
   padding: 16px;
 }
 
-.tabs {
-  overflow: hidden;
-  background-color: #f1f1f1;
-  display: flex;
-}
-
-.tab {
-  display: flex;
-  flex-direction: column;
-}
-
-.tabs .tab.active .active-bar {
-  height: 2px;
-  background-color: var(--primary);
-}
-
-.tabs .tab button {
-  background-color: inherit;
-  float: left;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 16px 16px;
-  transition: .3s;
-  font-size: 17px;
-}
-
-.tabs .tab button:hover {
-  background-color: rgba(0, 105, 174, 0.06);
-}
-
-.tabs .tab.active button {
-  color: var(--primary);
-}
-
-.tab-content {
-  display: none;
-  padding: 8px 16px;
-}
-
 .overlay {
   position: fixed;
   top: 0;
@@ -87,7 +47,7 @@ html, body {
   display: none;
 }
 
-#filter-container-1, #filter-container-2 {
+#filter-container-1, #filter-container-2, #filter-container-3 {
   display: flex;
   column-gap: 16px;
 }

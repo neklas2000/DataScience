@@ -2,17 +2,29 @@ class Filter {
 
   /**
    * @param {string} root id of the root element
+   * @param {boolean} includeMonths
    */
-  constructor(root) {
+  constructor(root, includeMonths) {
     this.wind_farm = 'a';
     this.facility = 1;
     this.year = 2014;
+    this.month = 1;
     this.container = document.getElementById(root);
     this.id = root;
+    /**
+     * @type {boolean}
+     */
+    this.includeMonths = includeMonths;
     /**
      * @type {{
      *  [key: string]: {
      *    facilities: number[];
+     *    months: {
+     *      [facility: number]: {
+     *        default: number[];
+    *         [year: number]: number[];
+     *      };
+     *    };
      *    years: {
      *      default: number[];
      *      [facility: number]: number[];
@@ -22,38 +34,350 @@ class Filter {
      */
     this.windFarms = {
       a: {
-        facilities: [1, 2, 3, 4, 5, 6, 7, 8],
+        facilities: [ 1, 2, 3, 4, 5, 6, 7, 8],
+        months: {
+          1: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2014: [ 9, 10, 11, 12],
+            2020: [ 1, 2 ]
+          },
+          2: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2014: [ 9, 10, 11, 12],
+            2020: [ 1, 2 ]
+          },
+          3: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2014: [ 9, 10, 11, 12],
+            2020: [ 1, 2 ]
+          },
+          4: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2014: [ 9, 10, 11, 12],
+            2020: [ 1, 2 ]
+          },
+          5: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2014: [ 9, 10, 11, 12],
+            2020: [ 1, 2 ]
+          },
+          6: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2014: [ 9, 10, 11, 12],
+            2020: [ 1, 2 ]
+          },
+          7: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2014: [ 9, 10, 11, 12],
+            2020: [ 1, 2 ]
+          },
+          8: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2014: [ 9, 10, 11, 12],
+            2020: [ 1, 2 ]
+          }
+        },
         years: {
-          default: [2014, 2015, 2016, 2017, 2018, 2019, 2020]
+          default: [ 2014, 2015, 2016, 2017, 2018, 2019, 2020 ]
         }
       },
       b: {
-        facilities: [1, 2, 3, 4],
+        facilities: [ 1, 2, 3, 4 ],
+        months: {
+          1: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2010: [ 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          2: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2010: [ 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          3: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2010: [ 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          4: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2010: [ 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          }
+        },
         years: {
-          default: [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020]
+          default: [ 2014, 2015, 2016, 2017, 2018, 2019, 2020 ]
         }
       },
       c: {
-        facilities: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+        facilities: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+        months: {
+          1: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2011: [ 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          2: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2011: [ 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          3: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2010: [ 12 ],
+            2020: [ 1, 2 ]
+          },
+          4: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          5: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2013: [ 12 ],
+            2020: [ 1, 2 ]
+          },
+          6: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2010: [ 12 ],
+            2020: [ 1, 2 ]
+          },
+          7: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2010: [ 12 ],
+            2020: [ 1, 2 ]
+          },
+          8: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2010: [ 12 ],
+            2020: [ 1, 2 ]
+          },
+          9: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2010: [ 12 ],
+            2020: [ 1, 2 ]
+          },
+          10: {
+            2019: [ 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          11: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2017: [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          12: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2017: [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          }
+        },
         years: {
-          default: [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020],
-          10: [2019, 2020],
-          11: [2017, 2018, 2019, 2020],
-          12: [2017, 2018, 2019, 2020]
+          default: [ 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+          1: [ 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+          2: [ 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+          4: [ 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+          5: [ 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+          10: [ 2019, 2020 ],
+          11: [ 2017, 2018, 2019, 2020 ],
+          12: [ 2017, 2018, 2019, 2020 ]
         }
       },
       d: {
-        facilities: [1, 2, 3, 4],
+        facilities: [ 1, 2, 3, 4 ],
+        months: {
+          1: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2011: [ 12 ],
+            2020: [ 1, 2 ]
+          },
+          2: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2011: [ 12 ],
+            2020: [ 1, 2 ]
+          },
+          3: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2011: [ 12 ],
+            2020: [ 1, 2 ]
+          },
+          "4": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          }
+        },
         years: {
-          default: [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020]
+          default: [ 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+          4: [ 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ]
         }
       },
       e: {
-        facilities: [3, 6, 7, 10, 11, 12, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38],
+        facilities: [ 3, 6, 7, 10, 11, 12, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38 ],
+        months: {
+          10: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2012: [ 12 ],
+            2020: [ 1, 2 ]
+          },
+          11: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2012: [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          12: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2012: [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          15: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2012: [ 12 ],
+            2020: [ 1, 2 ]
+          },
+          16: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          17: {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "18": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2012: [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "19": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2012: [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "20": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "21": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "22": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "23": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "24": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "3": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2012: [ 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "6": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2012: [ 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "7": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "25": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "26": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2012: [ 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "27": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2012: [ 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "28": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "29": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "30": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2012: [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "31": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2012: [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "32": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "33": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "34": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "35": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2012: [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "36": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2012: [ 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "37": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          },
+          "38": {
+            default: [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+            2020: [ 1, 2 ]
+          }
+        },
         years: {
-          default: [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020]
+          default: [ 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+          16: [ 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+          20: [ 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+          21: [ 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+          22: [ 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+          23: [ 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+          24: [ 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+          28: [ 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+          29: [ 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+          32: [ 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+          33: [ 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+          34: [ 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ],
+          38: [ 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 ]
         }
       }
+    };
+    this.monthMapping = {
+      1: 'Januar',
+      2: 'Februar',
+      3: 'März',
+      4: 'April',
+      5: 'Mai',
+      6: 'Juni',
+      7: 'Juli',
+      8: 'August',
+      9: 'September',
+      10: 'Oktober',
+      11: 'November',
+      12: 'Dezember',
     };
     this.render();
   }
@@ -68,6 +392,10 @@ class Filter {
 
   handleYearChange(ev) {
     this.year = Number(ev.target.value);
+  }
+
+  handleMonthChange(ev) {
+    this.month = Number(ev.target.value);
   }
 
   changeFacilities() {
@@ -104,9 +432,29 @@ class Filter {
     this.year = years[0];
   }
 
+  changeMonths() {
+    let months = this.windFarms[this.wind_farm].months[this.facility].default;
+
+    if (Object.hasOwn(this.windFarms[this.wind_farm].months[this.facility], this.year)) {
+      months = this.windFarms[this.wind_farm].months[this.facility][this.year];
+    }
+
+    this.container.querySelector(`div#month-filter__${this.id}-container`)
+      .innerHTML = months.map((month, index) => {
+        return `
+          <div>
+            <input type="radio" id="month_${month}" name="month__${this.id}" value="${month}" ${index === 0 ? 'checked' : ''} />
+            <label for="month_${month}">${this.monthMapping[month]}</label>
+          </div>
+        `;
+      }).join('');
+
+    this.month = months[0];
+  }
+
   render() {
     this.container.innerHTML = `
-      <fieldset id="wind-farm-filter__${this.id}" style="flex: 33%;">
+      <fieldset id="wind-farm-filter__${this.id}" style="flex: ${this.includeMonths ? 25 : 33}%;">
         <legend>Windpark auswählen</legend>
         <div>
           <input type="radio" id="wind_farm_a" name="wind_farm__${this.id}" value="a" checked />
@@ -129,7 +477,7 @@ class Filter {
           <label for="wind_farm_e">Windpark E</label>
         </div>
       </fieldset>
-      <fieldset id="facility-filter__${this.id}" style="flex: 33%;">
+      <fieldset id="facility-filter__${this.id}" style="flex: ${this.includeMonths ? 25 : 33}%;">
         <legend>Anlage auswählen</legend>
         <div id="facility-filter__${this.id}-container">
           <div>
@@ -166,7 +514,7 @@ class Filter {
           </div>
         </div>
       </fieldset>
-      <fieldset id="year-filter__${this.id}" style="flex: 33%;">
+      <fieldset id="year-filter__${this.id}" style="flex: ${this.includeMonths ? 25 : 33}%;">
         <legend>Jahr auswählen</legend>
         <div id="year-filter__${this.id}-container">
           <div>
@@ -199,6 +547,65 @@ class Filter {
           </div>
         </div>
       </fieldset>
+      ${
+        this.includeMonths ? (
+          `
+            <fieldset id="month-filter__${this.id}" style="flex: 25%;">
+              <legend>Monat auswählen</legend>
+              <div id="month-filter__${this.id}-container">
+                <div>
+                  <input type="radio" id="month_1" name="month__${this.id}" value="1" checked />
+                  <label for="month_1">Januar</label>
+                </div>
+                <div>
+                  <input type="radio" id="month_2" name="month__${this.id}" value="2" />
+                  <label for="month_2">Februar</label>
+                </div>
+                <div>
+                  <input type="radio" id="month_3" name="month__${this.id}" value="3" />
+                  <label for="month_3">März</label>
+                </div>
+                <div>
+                  <input type="radio" id="month_4" name="month__${this.id}" value="4" />
+                  <label for="month_4">April</label>
+                </div>
+                <div>
+                  <input type="radio" id="month_5" name="month__${this.id}" value="5" />
+                  <label for="month_5">Mai</label>
+                </div>
+                <div>
+                  <input type="radio" id="month_6" name="month__${this.id}" value="6" />
+                  <label for="month_6">Juni</label>
+                </div>
+                <div>
+                  <input type="radio" id="month_7" name="month__${this.id}" value="7" />
+                  <label for="month_7">Juli</label>
+                </div>
+                <div>
+                  <input type="radio" id="month_8" name="month__${this.id}" value="8" />
+                  <label for="month_8">August</label>
+                </div>
+                <div>
+                  <input type="radio" id="month_9" name="month__${this.id}" value="9" />
+                  <label for="month_9">September</label>
+                </div>
+                <div>
+                  <input type="radio" id="month_10" name="month__${this.id}" value="10" />
+                  <label for="month_10">Oktober</label>
+                </div>
+                <div>
+                  <input type="radio" id="month_11" name="month__${this.id}" value="11" />
+                  <label for="month_11">November</label>
+                </div>
+                <div>
+                  <input type="radio" id="month_12" name="month__${this.id}" value="12" />
+                  <label for="month_12">Dezember</label>
+                </div>
+              </div>
+            </fieldset>
+          `
+        ) : ''
+      }
     `;
 
     this.container.querySelector(`fieldset#wind-farm-filter__${this.id}`)
@@ -206,16 +613,32 @@ class Filter {
         this.handleWindFarmChange(ev);
         this.changeFacilities();
         this.changeYears();
+        if (this.includeMonths) {
+          this.changeMonths();
+        }
       });
     this.container.querySelector(`fieldset#facility-filter__${this.id}`)
       .addEventListener('change', (ev) => {
         this.handleFacilityChange(ev);
         this.changeYears();
+        if (this.includeMonths) {
+          this.changeMonths();
+        }
       });
     this.container.querySelector(`fieldset#year-filter__${this.id}`)
       .addEventListener('change', (ev) => {
         this.handleYearChange(ev);
+        if (this.includeMonths) {
+          this.changeMonths();
+        }
       });
+
+    if (this.includeMonths) {
+      this.container.querySelector(`fieldset#month-filter__${this.id}`)
+        .addEventListener('change', (ev) => {
+          this.handleMonthChange(ev);
+        });
+    }
   }
 
 }

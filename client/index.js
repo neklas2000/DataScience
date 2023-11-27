@@ -1,26 +1,10 @@
 var client = new HttpClient();
 var errorFrequencyDiagramContainer = document.getElementById('image-container-1');
-var correlationDiagramContainer = document.getElementById('image-container-2');
-var errorFrequencyFilter = new Filter('filter-container-1');
-var correlationFilter = new Filter('filter-container-2');
-
-function toggleTab(ev, tabId) {
-  var i, tabContents, tabLinks;
-  tabContents = document.getElementsByClassName('tab-content');
-
-  for (i = 0; i < tabContents.length; i++) {
-    tabContents[i].style.display = 'none';
-  }
-
-  tabLinks = document.getElementsByClassName('tablink');
-
-  for (i = 0; i < tabLinks.length; i++) {
-    tabLinks[i].parentElement.className = tabLinks[i].parentElement.className.replace(' active', '');
-  }
-
-  document.getElementById(tabId).style.display = 'block';
-  ev.currentTarget.parentElement.className += ' active';
-}
+var monthlyErrorFrequencyDiagramContainer = document.getElementById('image-container-2');
+var correlationDiagramContainer = document.getElementById('image-container-3');
+var errorFrequencyFilter = new Filter('filter-container-1', false);
+var monthlyErrorFrequencyFilter = new Filter('filter-container-2', true);
+var correlationFilter = new Filter('filter-container-3');
 
 function loadCorrelationDiagram() {
   var loader = new Loader('loader-container', 'loader-overlay');
@@ -38,20 +22,30 @@ function loadCorrelationDiagram() {
     });
 }
 
-function loadErrorFrequencyDiagram() {
+/**
+ * @param {boolean} includeMonth
+ */
+function loadErrorFrequencyDiagram(includeMonth) {
   var loader = new Loader('loader-container', 'loader-overlay');
 
-  client.getErrorFrequencyDiagram(errorFrequencyFilter.wind_farm, errorFrequencyFilter.facility, errorFrequencyFilter.year)
-    .then((diagram) => {
+  client.getErrorFrequencyDiagram({
+    windFarm: includeMonth ? monthlyErrorFrequencyFilter.wind_farm : errorFrequencyFilter.wind_farm,
+    facility: includeMonth ? monthlyErrorFrequencyFilter.facility : errorFrequencyFilter.facility,
+    year: includeMonth ? monthlyErrorFrequencyFilter.year : errorFrequencyFilter.year,
+    month: includeMonth ? monthlyErrorFrequencyFilter.month : null
+  }).then((diagram) => {
       const img = new Base64Image(diagram, 'Test');
       loader.destroy();
-      errorFrequencyDiagramContainer.innerHTML = '';
-      errorFrequencyDiagramContainer.appendChild(img);
+      if (!includeMonth) {
+        errorFrequencyDiagramContainer.innerHTML = '';
+        errorFrequencyDiagramContainer.appendChild(img);
+      } else {
+        monthlyErrorFrequencyDiagramContainer.innerHTML = '';
+        monthlyErrorFrequencyDiagramContainer.appendChild(img);
+      }
     })
     .catch((err) => {
       console.log(err);
       loader.destroy();
     });
 }
-
-document.getElementById('default-open').click();

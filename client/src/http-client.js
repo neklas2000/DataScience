@@ -19,14 +19,17 @@ class HttpClient {
   }
 
   /**
-   * @param {string} windFarm
-   * @param {number} facility
-   * @param {number} year
+   * @param {{ windFarm: string; facility: number; year: number; month: number | null; }}
    * @returns {Promise<string>}
    */
-  getErrorFrequencyDiagram(windFarm, facility, year) {
+  getErrorFrequencyDiagram({ windFarm, facility, year, month }) {
     return new Promise((resolve, reject) => {
-      fetch(`http://localhost/api/errorfrequency?farm=${windFarm}&facility=${facility}&year=${year}`)
+      let uri = `http://localhost/api/errorfrequency?farm=${windFarm}&facility=${facility}&year=${year}`;
+      if (month !== null) {
+        uri += `&month=${month}`;
+      }
+
+      fetch(uri)
         .then((res) => {
           res.json()
             .then((data) => resolve(data.image))

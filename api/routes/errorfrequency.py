@@ -5,6 +5,7 @@ from flask_cors import CORS
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
+from scripts.constants import month_mapping
 
 errorfrequency_bp=Blueprint('errorfrequency', __name__)
 CORS(errorfrequency_bp)
@@ -14,6 +15,9 @@ def errorfrequency():
   wind_farm=request.args.get('farm')
   facility=request.args.get('facility')
   year=int(request.args.get('year'))
+  month=request.args.get('month', default=None)
+  if month is not None:
+    month=int(month)
 
   cwd=os.getcwd()
 
@@ -30,21 +34,43 @@ def errorfrequency():
     utc=True
   )
 
-  df_year=df[df['DateTime'].dt.year == year]
-  error_frequency=df_year['Fehlernummer'].value_counts()
-  error_frequency.plot(kind='bar', figsize=(6.4, 8.5))
-  plt.xlabel('Fehlernummer')
-  plt.ylabel('Häufigkeit')
-  plt.title(f'Häufigkeit der Fehlernummern der {facility_text} im {wind_farm_text} ({year})')
 
-  img_buf=BytesIO()
-  plt.savefig(img_buf, format='png')
-  img_buf.seek(0)
+  if month is None:
+    df_year=df[df['DateTime'].dt.year == year]
+    error_frequency=df_year['Fehlernummer'].value_counts()
+    error_frequency.plot(kind='bar', figsize=(6.4, 8.5))
+    plt.xlabel('Fehlernummer')
+    plt.ylabel('Häufigkeit')
+    plt.title(f'Häufigkeit der Fehlernummern der {facility_text} im {wind_farm_text} ({year})')
 
-  img_base64=base64.b64encode(img_buf.read()).decode('utf-8')
+    img_buf=BytesIO()
+    plt.savefig(img_buf, format='png')
+    img_buf.seek(0)
 
-  plt.close()
+    img_base64=base64.b64encode(img_buf.read()).decode('utf-8')
 
-  return jsonify({
-    'image': img_base64
-  })
+    plt.close()
+
+    return jsonify({
+      'image': img_base64
+    })
+  else:
+    df_year=df[df['DateTime'].dt.year == year]
+    df_month=df_year[df_year['DateTime'].dt.month == month]
+    error_frequency=df_month['Fehlernummer'].value_counts()
+    error_frequency.plot(kind='bar', figsize=(6.4, 8.5))
+    plt.xlabel('Fehlernummer')
+    plt.ylabel('Häufigkeit')
+    plt.title(f'Häufigkeit der Fehlernummern der {facility_text} im {wind_farm_text} ({month_mapping[month]} {year})')
+
+    img_buf=BytesIO()
+    plt.savefig(img_buf, format='png')
+    img_buf.seek(0)
+
+    img_base64=base64.b64encode(img_buf.read()).decode('utf-8')
+
+    plt.close()
+
+    return jsonify({
+      'image': img_base64
+    })
