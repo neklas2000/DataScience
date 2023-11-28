@@ -22,7 +22,7 @@ def windspeed():
 
   feather_file = f'{cwd}/transformed_data/wind_farm_{wind_farm}/facility_{facility}.feather'
   df = pd.read_feather(feather_file)
-  df['DateTime'] = pd.to_datetime(df['DateTime'], errors='coerce', format='%Y-%m-%dT%H:%M:%S.%f%z')
+  df['DateTime'] = pd.to_datetime(df['DateTime'], errors='coerce', format='%Y-%m-%dT%H:%M:%S.%f%z', utc=True)
   df2=df[df['DateTime'].dt.year == year]
 
   df2 = df2.assign(Month=df2['DateTime'].dt.month)
