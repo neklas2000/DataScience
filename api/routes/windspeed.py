@@ -30,7 +30,7 @@ def windspeed():
   df3 = df2.groupby(['Month'])['Windgeschwindigkeit'].mean().reset_index()
   df3["Leistung"] = df2.groupby(['Month'])['Leistung'].mean().reset_index()["Leistung"]
 
-  fig, ax1 = plt.subplots(figsize=(10, 6.5))
+  fig, ax1 = plt.subplots(figsize=(10, 10))
 
   month_labels = df3['Month'].map(month_mapping)
 

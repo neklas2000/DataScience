@@ -8,7 +8,7 @@ class HttpClient {
    */
   getCorrelationDiagram(windFarm, facility, year) {
     return new Promise((resolve, reject) => {
-      fetch(`http://localhost/api/windspeed?farm=${windFarm}&facility=${facility}&year=${year}`)
+      fetch(`/api/windspeed?farm=${windFarm}&facility=${facility}&year=${year}`)
         .then((res) => {
           res.json()
             .then((data) => resolve(data.image))
@@ -24,7 +24,7 @@ class HttpClient {
    */
   getErrorFrequencyDiagram({ windFarm, facility, year, month }) {
     return new Promise((resolve, reject) => {
-      let uri = `http://localhost/api/errorfrequency?farm=${windFarm}&facility=${facility}&year=${year}`;
+      let uri = `/api/errorfrequency?farm=${windFarm}&facility=${facility}&year=${year}`;
       if (month !== null) {
         uri += `&month=${month}`;
       }

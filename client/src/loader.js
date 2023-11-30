@@ -49,12 +49,11 @@ class Loader {
           content: '';
           display: block;
           position: absolute;
-          top: 40px;
-          left: -3px;
+          top: 46px;
+          left: 0px;
           z-index: 1;
-          height: 21px;
-          width: 21px;
-          border: 4px solid darkgrey;
+          height: 14px;
+          width: 14px;
           border-radius: 50%;
           box-sizing: border-box;
         }

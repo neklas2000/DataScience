@@ -8,7 +8,7 @@ class Filter {
     this.wind_farm = 'a';
     this.facility = 1;
     this.year = 2014;
-    this.month = 1;
+    this.month = 9;
     this.container = document.getElementById(root);
     this.id = root;
     /**
@@ -554,39 +554,7 @@ class Filter {
               <legend>Monat auswählen</legend>
               <div id="month-filter__${this.id}-container">
                 <div>
-                  <input type="radio" id="month_1" name="month__${this.id}" value="1" checked />
-                  <label for="month_1">Januar</label>
-                </div>
-                <div>
-                  <input type="radio" id="month_2" name="month__${this.id}" value="2" />
-                  <label for="month_2">Februar</label>
-                </div>
-                <div>
-                  <input type="radio" id="month_3" name="month__${this.id}" value="3" />
-                  <label for="month_3">März</label>
-                </div>
-                <div>
-                  <input type="radio" id="month_4" name="month__${this.id}" value="4" />
-                  <label for="month_4">April</label>
-                </div>
-                <div>
-                  <input type="radio" id="month_5" name="month__${this.id}" value="5" />
-                  <label for="month_5">Mai</label>
-                </div>
-                <div>
-                  <input type="radio" id="month_6" name="month__${this.id}" value="6" />
-                  <label for="month_6">Juni</label>
-                </div>
-                <div>
-                  <input type="radio" id="month_7" name="month__${this.id}" value="7" />
-                  <label for="month_7">Juli</label>
-                </div>
-                <div>
-                  <input type="radio" id="month_8" name="month__${this.id}" value="8" />
-                  <label for="month_8">August</label>
-                </div>
-                <div>
-                  <input type="radio" id="month_9" name="month__${this.id}" value="9" />
+                  <input type="radio" id="month_9" name="month__${this.id}" value="9" checked />
                   <label for="month_9">September</label>
                 </div>
                 <div>

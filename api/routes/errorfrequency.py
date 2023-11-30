@@ -26,6 +26,7 @@ def errorfrequency():
   df=pd.read_feather(feather_file)
   facility_text=f'Anlage {facility}'
   wind_farm_text=f'Windpark {wind_farm.capitalize()}'
+  parentheses_text=f'{year}'
 
   df['DateTime'] = pd.to_datetime(
     df['DateTime'],
@@ -34,43 +35,24 @@ def errorfrequency():
     utc=True
   )
 
+  df_data=df[df['DateTime'].dt.year == year]
+  if month is not None:
+    df_data=df_data[df_data['DateTime'].dt.month == month]
+    parentheses_text=f'{month_mapping[month]} {parentheses_text}'
 
-  if month is None:
-    df_year=df[df['DateTime'].dt.year == year]
-    error_frequency=df_year['Fehlernummer'].value_counts()
-    error_frequency.plot(kind='bar', figsize=(6.4, 8.5))
-    plt.xlabel('Fehlernummer')
-    plt.ylabel('Häufigkeit')
-    plt.title(f'Häufigkeit der Fehlernummern der {facility_text} im {wind_farm_text} ({year})')
+  error_frequency=df_data['Fehlernummer'].value_counts()
+  error_frequency.plot(kind='bar', figsize=(10, 10))
+  plt.xlabel('Fehlernummer')
+  plt.ylabel('Häufigkeit')
+  plt.title(f'Häufigkeit der Fehlernummern der {facility_text} im {wind_farm_text} ({parentheses_text})')
+  img_buf=BytesIO()
+  plt.savefig(img_buf, format='png')
+  img_buf.seek(0)
 
-    img_buf=BytesIO()
-    plt.savefig(img_buf, format='png')
-    img_buf.seek(0)
+  img_base64=base64.b64encode(img_buf.read()).decode('utf-8')
 
-    img_base64=base64.b64encode(img_buf.read()).decode('utf-8')
+  plt.close()
 
-    plt.close()
-
-    return jsonify({
-      'image': img_base64
-    })
-  else:
-    df_year=df[df['DateTime'].dt.year == year]
-    df_month=df_year[df_year['DateTime'].dt.month == month]
-    error_frequency=df_month['Fehlernummer'].value_counts()
-    error_frequency.plot(kind='bar', figsize=(6.4, 8.5))
-    plt.xlabel('Fehlernummer')
-    plt.ylabel('Häufigkeit')
-    plt.title(f'Häufigkeit der Fehlernummern der {facility_text} im {wind_farm_text} ({month_mapping[month]} {year})')
-
-    img_buf=BytesIO()
-    plt.savefig(img_buf, format='png')
-    img_buf.seek(0)
-
-    img_base64=base64.b64encode(img_buf.read()).decode('utf-8')
-
-    plt.close()
-
-    return jsonify({
-      'image': img_base64
-    })
+  return jsonify({
+    'image': img_base64
+  })
