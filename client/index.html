@@ -11,6 +11,8 @@
     <script src="./src/mat-tabs.js"></script>
     <script src="./src/mat-tab.js"></script>
     <script src="./src/mat-tab-content.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    <link href=" https://cdn.jsdelivr.net/npm/code-prettify@0.1.0/styles/sunburst.min.css " rel="stylesheet">
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body>
@@ -22,6 +24,7 @@
         <mat-tab label="Fehlernummern (jährlich)" opened="true"></mat-tab>
         <mat-tab label="Fehlernummern (monatlich)"></mat-tab>
         <mat-tab label="Korrelation: Windgeschwindigkeit zu Leistung"></mat-tab>
+        <mat-tab label="Erläuterungen"></mat-tab>
         <mat-tab-content>
           <div id="filter-container-1"></div>
           <button class="load-diagram" onclick="loadErrorFrequencyDiagram(false)">Lade Diagramm</button>
@@ -36,6 +39,203 @@
           <div id="filter-container-3"></div>
           <button class="load-diagram" onclick="loadCorrelationDiagram()">Lade Diagramm</button>
           <div id="image-container-3"></div>
+        </mat-tab-content>
+        <mat-tab-content>
+          <mat-tabs>
+            <mat-tab label="API - Server" opened="true"></mat-tab>
+            <mat-tab label="API - Korrelation"></mat-tab>
+            <mat-tab label="API - Fehlernummern"></mat-tab>
+            <mat-tab label="Frontend"></mat-tab>
+            <mat-tab-content>
+              <pre class="prettyprint">
+                <code class="lang-py">
+                  from flask import Flask
+                  from routes.windspeed import windspeed_bp
+                  from routes.errorfrequency import errorfrequency_bp
+
+                  app=Flask(__name__)
+
+                  app.register_blueprint(windspeed_bp, url_prefix='/api')
+                  app.register_blueprint(errorfrequency_bp, url_prefix='/api')
+
+                  if __name__ == '__main__':
+                    app.run(debug=True, host='0.0.0.0')
+                </code>
+              </pre>
+              <ul style="width: 95%; margin: 32px auto 1em auto;">
+                <li>Python Webframework Flask für die API</li>
+                <li>Blueprints sind wiederverwendbare Programmteile, die für die Routen verwendet werden</li>
+                <li>Die API wird auf localhost gestartet und alle Routen sind mit dem Präfix /api erreichbar</li>
+              </ul>
+            </mat-tab-content>
+            <mat-tab-content>
+              <pre class="prettyprint">
+                <code class="lang-py">
+                  import os
+                  import pandas as pd
+                  import numpy as np
+                  from flask import Blueprint, request, jsonify
+                  from flask_cors import CORS
+                  import matplotlib.pyplot as plt
+                  from io import BytesIO
+                  import base64
+
+                  from scripts.constants import month_mapping
+
+                  windspeed_bp=Blueprint('windspeed', __name__)
+                  CORS(windspeed_bp)
+
+                  @windspeed_bp.route('/windspeed', methods=['GET'])
+                  def windspeed():
+                    wind_farm=request.args.get('farm')
+                    facility=request.args.get('facility')
+                    year=int(request.args.get('year'))
+
+                    cwd=os.getcwd()
+
+                    feather_file = f'{cwd}/transformed_data/wind_farm_{wind_farm}/facility_{facility}.feather'
+                    df = pd.read_feather(feather_file)
+                    df['DateTime'] = pd.to_datetime(df['DateTime'], errors='coerce', format='%Y-%m-%dT%H:%M:%S.%f%z', utc=True)
+                    df2=df[df['DateTime'].dt.year == year]
+
+                    df2 = df2.assign(Month=df2['DateTime'].dt.month)
+
+                    df3 = df2.groupby(['Month'])['Windgeschwindigkeit'].mean().reset_index()
+                    df3["Leistung"] = df2.groupby(['Month'])['Leistung'].mean().reset_index()["Leistung"]
+
+                    fig, ax1 = plt.subplots(figsize=(10, 10))
+
+                    month_labels = df3['Month'].map(month_mapping)
+
+                    ax1.bar(np.arange(len(month_labels)) - 0.2, df3['Windgeschwindigkeit'], color='b', label='Windgeschwindigkeit',width=0.4)
+                    ax1.set_xlabel('Monat')
+                    ax1.set_ylabel('Windgeschwindigkeit (m/s)', color='b')
+                    ax1.set_xticks(np.arange(len(month_labels)))
+                    ax1.set_xticklabels(month_labels, rotation=45,ha="right")
+                    ax1.tick_params('y', colors='b')
+
+                    ax2 = ax1.twinx()
+                    ax2.bar(np.arange(len(month_labels)) + 0.2, df3['Leistung'], color='r', label='Leistung',width=0.4)
+                    ax2.set_ylabel('Leistung (kW)', color='r')
+                    ax2.tick_params('y', colors='r')
+
+                    plt.title(f'Korrelation: Windgeschwindigkeit zu Leistung der Anlage {facility} im Windpark {wind_farm.capitalize()} über das Jahr {year}')
+
+                    img_buf=BytesIO()
+                    plt.savefig(img_buf, format='png')
+                    img_buf.seek(0)
+
+                    img_base64=base64.b64encode(img_buf.read()).decode('utf-8')
+
+                    plt.close()
+
+                    return jsonify({
+                      'image': img_base64
+                    })
+                </code>
+              </pre>
+              <ul style="width: 95%; margin: 32px auto 1em auto;">
+                <li>Blueprint für die Route /windspeed wird erzeugt</li>
+                <li>Die Funktion <code>windspeed()</code> wird für die Route /windspeed mittels Annotation registriert und nur GET-Requests werden erlaubt</li>
+                <li>Die erforderlichen Parameter werden ausgelesen um anhand dessen für eine bestimmte Anlage eines bestimmten Windparks für ein bestimmtes Jahr die Korrelation zu erstellen</li>
+                <li>Die gewünschte Datei wird eingelesen, die DateTime-Spalte wird geparst und die Datensätze des übergebenen Jahres werden herausgefiltert</li>
+                <li>In dem Dataframe <code>df2</code> werden die entsprechenden Monate hinzugefügt und dann wird nach dem Monat gruppiert und jeweils der Durchschnitt der Windgeschwindigkeit und der Leistung in einem neuen Dataframe gespeichert</li>
+                <li>Das Diagramm wird geplottet und dabei werden für die Windgeschwindigkeit und die Leistung jeweils eigene Balken generiert, die mit einem Offset nebeneinander dargestellt werden</li>
+                <li>Speichern des Plots zuerst in einem Buffer von Bytes und anschließende Umwandlung in Base64 sowie Rückgabe als HTTP-Response im JSON-Format</li>
+              </ul>
+            </mat-tab-content>
+            <mat-tab-content>
+              <pre class="prettyprint">
+                <code class="lang-py">
+                  import os
+                  import pandas as pd
+                  from flask import Blueprint, request, jsonify
+                  from flask_cors import CORS
+                  import matplotlib.pyplot as plt
+                  from io import BytesIO
+                  import base64
+                  from scripts.constants import month_mapping
+
+                  errorfrequency_bp=Blueprint('errorfrequency', __name__)
+                  CORS(errorfrequency_bp)
+
+                  @errorfrequency_bp.route('/errorfrequency', methods=['GET'])
+                  def errorfrequency():
+                    wind_farm=request.args.get('farm')
+                    facility=request.args.get('facility')
+                    year=int(request.args.get('year'))
+                    month=request.args.get('month', default=None)
+                    if month is not None:
+                      month=int(month)
+
+                    cwd=os.getcwd()
+
+                    feather_file=f'{cwd}/transformed_data/wind_farm_{wind_farm}/facility_{facility}.feather'
+
+                    df=pd.read_feather(feather_file)
+                    facility_text=f'Anlage {facility}'
+                    wind_farm_text=f'Windpark {wind_farm.capitalize()}'
+                    parentheses_text=f'{year}'
+
+                    df['DateTime'] = pd.to_datetime(
+                      df['DateTime'],
+                      errors='coerce',
+                      format='%Y-%m-%dT%H:%M:%S.%f%z',
+                      utc=True
+                    )
+
+                    df_data=df[df['DateTime'].dt.year == year]
+                    if month is not None:
+                      df_data=df_data[df_data['DateTime'].dt.month == month]
+                      parentheses_text=f'{month_mapping[month]} {parentheses_text}'
+
+                    error_frequency=df_data['Fehlernummer'].value_counts()
+                    error_frequency.plot(kind='bar', figsize=(10, 10))
+                    plt.xlabel('Fehlernummer')
+                    plt.ylabel('Häufigkeit')
+                    plt.title(f'Häufigkeit der Fehlernummern der {facility_text} im {wind_farm_text} ({parentheses_text})')
+                    img_buf=BytesIO()
+                    plt.savefig(img_buf, format='png')
+                    img_buf.seek(0)
+
+                    img_base64=base64.b64encode(img_buf.read()).decode('utf-8')
+
+                    plt.close()
+
+                    return jsonify({
+                      'image': img_base64
+                    })
+                </code>
+              </pre>
+              <ul style="width: 95%; margin: 32px auto 1em auto;">
+                <li>Blueprint für die Route /errorfrequency wird erzeugt</li>
+                <li>Die Funktion <code>errorfrequency()</code> wird für die Route /errorfrequency mittels Annotation registriert und nur GET-Requests werden erlaubt</li>
+                <li>Die erforderlichen Parameter werden ausgelesen um anhand dessen für eine bestimmte Anlage eines bestimmten Windparks für ein bestimmtes Jahr das Diagramm zu erstellen</li>
+                <ul>
+                  <li>Sollte als Parameter auch der Monat gegeben sein, so wird das Diagramm für einen bestimmten Monat erzeugt</li>
+                </ul>
+                <li>Die gewünschte Datei wird eingelesen, die DateTime-Spalte wird geparst und die Datensätze des übergebenen Jahres werden herausgefiltert</li>
+                <ul>
+                  <li>Sollte der Monat definiert sein, werden die Datensätze weiter nach dem Monat gefiltert</li>
+                </ul>
+                <li>Es wird ein neuer Dataframe angelegt, der die Fehlernummern mit ihrer jeweiligen Häufigkeit abbildet, und dieses wird als Balkendiagramm geplottet</li>
+                <li>Speichern des Plots zuerst in einem Buffer von Bytes und anschließende Umwandlung in Base64 sowie Rückgabe als HTTP-Response im JSON-Format</li>
+              </ul>
+            </mat-tab-content>
+            <mat-tab-content>
+              <ul>
+                <li>Das Frontend wurde mit "normalen" HTML und JavaScript implementiert, es wurde also kein Framework verwendet</li>
+                <li>Für die Tabs wurden eigene Custom Components angelegt (angelehnt am Material Design)</li>
+                <li>Die Filtermöglichkeiten für die Diagramme wurden in einem separaten Python-Skript erzeugt (welche Windparks, wie viele Anlagen pro Park, welche Jahre pro Anlage und welche Monate pro Jahr)</li>
+                <li>HTTP-Requests werden mit der integrierten Fetch-API durchgeführt</li>
+                <li>Das Frontend und die API laufen in einem Docker-Container</li>
+                <ul>
+                  <li>Das Frontend läuft in einem NGINX (Reverse Proxy) und ist über Port 80 erreichbar</li>
+                  <li>Die API wird durch den NGINX über der Route /api erreichbar gemacht und ist somit ebenfalls über Port 80 erreichbar, auch wenn der Docker-Container auf Port 5000 läuft</li>
+                </ul>
+              </ul>
+            </mat-tab-content>
+          </mat-tabs>
         </mat-tab-content>
       </mat-tabs>
     </main>
