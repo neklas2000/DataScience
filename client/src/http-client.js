@@ -32,7 +32,10 @@ class HttpClient {
       fetch(uri)
         .then((res) => {
           res.json()
-            .then((data) => resolve(data.image))
+            .then(({ image, okay_count }) => resolve({
+              image,
+              okayCount: okay_count
+            }))
             .catch((err) => reject(err));
         })
         .catch((err) => reject(err));

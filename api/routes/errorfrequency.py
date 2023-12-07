@@ -5,6 +5,7 @@ from flask_cors import CORS
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
+import numpy as np
 from scripts.constants import month_mapping
 
 errorfrequency_bp=Blueprint('errorfrequency', __name__)
@@ -41,6 +42,12 @@ def errorfrequency():
     parentheses_text=f'{month_mapping[month]} {parentheses_text}'
 
   error_frequency=df_data['Fehlernummer'].value_counts()
+
+  error_okay=0
+  if 0 in error_frequency.index:
+    error_okay=error_frequency.loc[0]
+    error_frequency = error_frequency[error_frequency.index != 0]
+
   error_frequency.plot(kind='bar', figsize=(10, 10))
   plt.xlabel('Fehlernummer')
   plt.ylabel('Häufigkeit')
@@ -54,5 +61,6 @@ def errorfrequency():
   plt.close()
 
   return jsonify({
-    'image': img_base64
+    'image': img_base64,
+    'okay_count': np.int64(error_okay).item()
   })
