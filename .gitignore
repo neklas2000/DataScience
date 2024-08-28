@@ -5,3 +5,5 @@ original_data/*
 notebooks/*
 !notebooks/*.ipynb
 !notebooks/*.py
+
+**/__pycache__/*
